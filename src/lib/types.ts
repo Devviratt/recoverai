@@ -103,8 +103,38 @@ export interface AIDiagnosis {
 }
 
 export interface AIProviderInterface {
-  diagnose(context: PaymentContext): Promise<AIDiagnosis>;
+  diagnose(context: PaymentContext, strategyComparison?: StrategyComparison): Promise<AIDiagnosis>;
   readonly providerName: string;
+}
+
+// ─── Recovery Strategy Engine ──────────────────────────────────────────────────
+
+export interface StrategyCandidate {
+  action: RecoveryActionType;
+  estimatedRecoveryProbability: number; // 0.0 - 1.0 (deterministic estimated recovery probability)
+  expectedRecovery: number;              // amount * estimatedRecoveryProbability (in INR)
+  expectedIncrementalRecovery: number;   // expectedRecovery - baselineExpectedRecovery (in INR)
+  operationalCost: 'LOW' | 'MEDIUM' | 'HIGH';
+  confidence: number;                    // 0.0 - 1.0
+  eligible: boolean;
+  ineligibilityReason: string | null;
+}
+
+export interface StrategyComparison {
+  candidates: StrategyCandidate[];
+  recommendedAction: RecoveryActionType;
+  decisionReason: string;
+  baselineExpectedRecovery: number;
+  highestExpectedRecovery: number;
+}
+
+export interface WhatIfSimulationResult {
+  paymentContext: PaymentContext;
+  baselineExpectedRecovery: number;
+  candidates: StrategyCandidate[];
+  bestStrategy: RecoveryActionType;
+  expectedIncrementalRecovery: number;
+  recoveryValueLiftPercent: number;
 }
 
 // ─── Policy Engine ─────────────────────────────────────────────────────────────

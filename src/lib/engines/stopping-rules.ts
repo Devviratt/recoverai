@@ -59,8 +59,8 @@ export const STOPPING_RULES: StoppingRule[] = [
   {
     id: 'CUSTOMER_REPEATED_FAILURES',
     name: 'Customer Repeated Failures',
-    description: 'Stop if customer has too many recent failures (>5 in 30 days)',
-    check: (ctx) => ctx.customerRecentFailures > 5,
+    description: 'Stop if customer has too many recent consecutive failure attempts',
+    check: (ctx) => ctx.consecutiveFailures >= 3 || (ctx.customerRecentFailures > 30 && ctx.recoveryAttempts >= 2),
     reason: 'Customer has too many recent payment failures. Further automated contact inappropriate.',
   },
   {

@@ -42,6 +42,27 @@ export const PaymentContextSchema = z.object({
   total_transactions: z.number().int().min(0),
 });
 
+export const StrategyCandidateSchema = z.object({
+  action: z.enum(['RETRY', 'PAYMENT_LINK', 'REMINDER', 'ALT_METHOD', 'ESCALATE', 'STOP']),
+  estimated_recovery_probability: z.number().min(0).max(1),
+  expected_recovery: z.number().min(0),
+  expected_incremental_recovery: z.number().min(0),
+  operational_cost: z.enum(['LOW', 'MEDIUM', 'HIGH']),
+  confidence: z.number().min(0).max(1),
+  eligible: z.boolean(),
+  ineligibility_reason: z.string().nullable(),
+});
+
+export const StrategyComparisonSchema = z.object({
+  candidates: z.array(StrategyCandidateSchema).min(1),
+  recommended_action: z.enum(['RETRY', 'PAYMENT_LINK', 'REMINDER', 'ALT_METHOD', 'ESCALATE', 'STOP']),
+  decision_reason: z.string().min(5).max(500),
+  baseline_expected_recovery: z.number().min(0),
+  highest_expected_recovery: z.number().min(0),
+});
+
+export type StrategyComparisonResponse = z.infer<typeof StrategyComparisonSchema>;
+
 // ─── Validate AI Response ──────────────────────────────────────────────────────
 
 export function validateAIResponse(response: unknown): AIDiagnosisResponse | null {

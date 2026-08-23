@@ -3,19 +3,19 @@
 // Uses rule-based logic to generate realistic diagnoses that mirror
 // what a real LLM would produce, ensuring the demo works without API keys.
 
-import type { PaymentContext, AIDiagnosis, AIProviderInterface, RecoveryActionType } from '@/lib/types';
+import type { PaymentContext, AIDiagnosis, AIProviderInterface, RecoveryActionType, StrategyComparison } from '@/lib/types';
 
 export class MockAIProvider implements AIProviderInterface {
   readonly providerName = 'mock';
 
-  async diagnose(context: PaymentContext): Promise<AIDiagnosis> {
+  async diagnose(context: PaymentContext, strategyComparison?: StrategyComparison): Promise<AIDiagnosis> {
     // Simulate latency
     await new Promise((r) => setTimeout(r, 100 + Math.random() * 200));
 
-    const action = this.selectAction(context);
+    const action = strategyComparison?.recommendedAction || this.selectAction(context);
     const confidence = this.calculateConfidence(context, action);
     const diagnosis = this.generateDiagnosis(context);
-    const reasoning = this.generateReasoning(context, action);
+    const reasoning = this.generateReasoning(context, action, strategyComparison);
     const customerMessage = this.generateCustomerMessage(context, action);
 
     return {
@@ -124,8 +124,12 @@ export class MockAIProvider implements AIProviderInterface {
     return diagnoses[ctx.failureReason] ?? 'Payment failure requires further analysis.';
   }
 
-  private generateReasoning(ctx: PaymentContext, action: RecoveryActionType): string[] {
+  private generateReasoning(ctx: PaymentContext, action: RecoveryActionType, strategyComparison?: StrategyComparison): string[] {
     const reasons: string[] = [];
+
+    if (strategyComparison) {
+      reasons.push(`Strategy Engine Recommendation: ${strategyComparison.decisionReason}`);
+    }
 
     // Customer history
     if (ctx.customerSuccessRate > 0.7) {
