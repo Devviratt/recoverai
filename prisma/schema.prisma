@@ -1,0 +1,251 @@
+// RecoverAI — Database Schema
+// SQLite + Prisma for zero-setup demo experience
+// Switch to PostgreSQL by changing DATABASE_URL in .env
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Merchant ──────────────────────────────────────────────────────────────────
+
+model Merchant {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  businessType String  @map("business_type")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  customers   Customer[]
+  payments    Payment[]
+
+  @@map("merchants")
+}
+
+// ─── Customer ──────────────────────────────────────────────────────────────────
+
+model Customer {
+  id                 String   @id @default(cuid())
+  merchantId         String   @map("merchant_id")
+  externalId         String   @map("external_id") // e.g., "CUST_10023"
+  name               String
+  email              String
+  phone              String?
+  segment            String   @default("regular") // regular, premium, enterprise
+  totalTransactions  Int      @default(0) @map("total_transactions")
+  successfulPayments Int      @default(0) @map("successful_payments")
+  failedPayments     Int      @default(0) @map("failed_payments")
+  successRate        Float    @default(0) @map("success_rate")
+  lifetimeValue      Float    @default(0) @map("lifetime_value")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  merchant       Merchant       @relation(fields: [merchantId], references: [id])
+  payments       Payment[]
+  recoveryCases  RecoveryCase[]
+
+  @@unique([merchantId, externalId])
+  @@index([merchantId])
+  @@map("customers")
+}
+
+// ─── Payment ───────────────────────────────────────────────────────────────────
+
+model Payment {
+  id              String   @id @default(cuid())
+  merchantId      String   @map("merchant_id")
+  customerId      String   @map("customer_id")
+  externalId      String   @unique @map("external_id") // e.g., "pay_XXXXX"
+  orderId         String?  @map("order_id")
+  amount          Float    // in INR (smallest unit: paise stored as rupees)
+  currency        String   @default("INR")
+  status          String   // created, authorized, captured, failed, refunded
+  failureReason   String?  @map("failure_reason")
+  paymentMethod   String?  @map("payment_method") // card, upi, netbanking, wallet
+  international   Boolean  @default(false)
+  attemptCount    Int      @default(1) @map("attempt_count")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  merchant      Merchant       @relation(fields: [merchantId], references: [id])
+  customer      Customer       @relation(fields: [customerId], references: [id])
+  recoveryCase  RecoveryCase?
+
+  @@index([merchantId])
+  @@index([customerId])
+  @@index([status])
+  @@index([failureReason])
+  @@map("payments")
+}
+
+// ─── Recovery Case ─────────────────────────────────────────────────────────────
+
+model RecoveryCase {
+  id                String   @id @default(cuid())
+  paymentId         String   @unique @map("payment_id")
+  customerId        String   @map("customer_id")
+  
+  // State Machine
+  status            String   @default("AT_RISK") // AT_RISK, DIAGNOSING, ELIGIBLE, ACTION_SELECTED, ACTION_EXECUTED, AWAITING_OUTCOME, RECOVERED, ESCALATED, STOPPED, FAILED
+  previousStatus    String?  @map("previous_status")
+  
+  // Risk Assessment
+  riskScore         Float?   @map("risk_score") // 0-100
+  priority          String?  // LOW, MEDIUM, HIGH, CRITICAL
+  revenueAtRisk     Float?   @map("revenue_at_risk")
+  
+  // Recovery Tracking
+  recoveryAttempts  Int      @default(0) @map("recovery_attempts")
+  maxAttempts       Int      @default(3) @map("max_attempts")
+  recoveredAmount   Float    @default(0) @map("recovered_amount")
+  
+  // AI Analysis
+  aiConfidence      Float?   @map("ai_confidence")
+  aiDiagnosis       String?  @map("ai_diagnosis")
+  recommendedAction String?  @map("recommended_action")
+  
+  // Stopping
+  stopReason        String?  @map("stop_reason")
+  
+  // Payment Link (if created)
+  paymentLinkId     String?  @map("payment_link_id")
+  paymentLinkUrl    String?  @map("payment_link_url")
+  paymentLinkExpiry DateTime? @map("payment_link_expiry")
+
+  // Timestamps
+  diagnosedAt       DateTime? @map("diagnosed_at")
+  actionTakenAt     DateTime? @map("action_taken_at")
+  recoveredAt       DateTime? @map("recovered_at")
+  escalatedAt       DateTime? @map("escalated_at")
+  stoppedAt         DateTime? @map("stopped_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+  
+  // Evaluation
+  isEvaluation      Boolean  @default(false) @map("is_evaluation") // held-out evaluation set
+
+  payment         Payment          @relation(fields: [paymentId], references: [id])
+  customer        Customer         @relation(fields: [customerId], references: [id])
+  recoveryActions RecoveryAction[]
+  aiAnalyses      AIAnalysis[]
+  policyDecisions PolicyDecision[]
+  auditEvents     AuditEvent[]
+  escalation      Escalation?
+
+  @@index([status])
+  @@index([priority])
+  @@index([customerId])
+  @@map("recovery_cases")
+}
+
+// ─── Recovery Action ───────────────────────────────────────────────────────────
+
+model RecoveryAction {
+  id             String   @id @default(cuid())
+  caseId         String   @map("case_id")
+  actionType     String   @map("action_type") // RETRY, PAYMENT_LINK, REMINDER, ALT_METHOD, ESCALATE, STOP
+  actionDetails  String?  @map("action_details") // JSON
+  executionResult String? @map("execution_result") // SUCCESS, FAILED, PENDING
+  resultDetails  String?  @map("result_details") // JSON
+  attemptNumber  Int      @map("attempt_number")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  recoveryCase   RecoveryCase @relation(fields: [caseId], references: [id])
+
+  @@index([caseId])
+  @@map("recovery_actions")
+}
+
+// ─── AI Analysis ───────────────────────────────────────────────────────────────
+
+model AIAnalysis {
+  id                String   @id @default(cuid())
+  caseId            String   @map("case_id")
+  provider          String   // gemini, mock
+  diagnosis         String
+  recommendedAction String   @map("recommended_action")
+  confidence        Float
+  reasoning         String   // JSON array
+  customerMessage   String?  @map("customer_message")
+  inputContext       String  @map("input_context") // JSON — what the AI received
+  rawResponse       String?  @map("raw_response") // full AI response for debugging
+  latencyMs         Int?     @map("latency_ms")
+  promptVersion     String?  @map("prompt_version")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  recoveryCase      RecoveryCase @relation(fields: [caseId], references: [id])
+
+  @@index([caseId])
+  @@map("ai_analyses")
+}
+
+// ─── Policy Decision ──────────────────────────────────────────────────────────
+
+model PolicyDecision {
+  id              String   @id @default(cuid())
+  caseId          String   @map("case_id")
+  requestedAction String   @map("requested_action")
+  allowed         Boolean
+  reason          String
+  rule            String   // which rule triggered
+  details         String?  // JSON with context
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  recoveryCase    RecoveryCase @relation(fields: [caseId], references: [id])
+
+  @@index([caseId])
+  @@map("policy_decisions")
+}
+
+// ─── Audit Event ───────────────────────────────────────────────────────────────
+
+model AuditEvent {
+  id              String   @id @default(cuid())
+  caseId          String?  @map("case_id")
+  actor           String   // recoverai-agent, merchant-user, policy-engine, system
+  action          String   // DETECT_RISK, DIAGNOSE, RECOMMEND, POLICY_CHECK, CREATE_PAYMENT_LINK, ESCALATE, STOP, RECOVER, etc.
+  reason          String?
+  previousState   String?  @map("previous_state")
+  nextState       String?  @map("next_state")
+  aiRecommendation String? @map("ai_recommendation")
+  policyDecision  String?  @map("policy_decision")
+  executionResult String?  @map("execution_result")
+  metadata        String?  // JSON
+  timestamp       DateTime @default(now())
+
+  recoveryCase    RecoveryCase? @relation(fields: [caseId], references: [id])
+
+  @@index([caseId])
+  @@index([timestamp])
+  @@index([action])
+  @@map("audit_events")
+}
+
+// ─── Escalation ────────────────────────────────────────────────────────────────
+
+model Escalation {
+  id              String   @id @default(cuid())
+  caseId          String   @unique @map("case_id")
+  reason          String
+  priority        String   // LOW, MEDIUM, HIGH, CRITICAL
+  status          String   @default("PENDING") // PENDING, IN_REVIEW, APPROVED, REJECTED, RESOLVED
+  assignedTo      String?  @map("assigned_to")
+  aiSummary       String?  @map("ai_summary")
+  humanNotes      String?  @map("human_notes")
+  resolution      String?
+  resolvedAt      DateTime? @map("resolved_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  recoveryCase    RecoveryCase @relation(fields: [caseId], references: [id])
+
+  @@index([status])
+  @@index([priority])
+  @@map("escalations")
+}
