@@ -109,35 +109,38 @@ export default function Navbar() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Razorpay Co-Branded Logo */}
-            <Link href="/" className="flex items-center shrink-0 hover:opacity-95 transition-opacity">
-              <Logo size="md" theme="dark" />
-            </Link>
+            {/* Left Group: Logo + Navigation with Generous Spacing */}
+            <div className="flex items-center space-x-8 xl:space-x-12">
+              {/* Razorpay Co-Branded Logo */}
+              <Link href="/" className="flex items-center shrink-0 hover:opacity-95 transition-opacity pr-2">
+                <Logo size="md" theme="dark" />
+              </Link>
 
-            {/* Streamlined Horizontal Navigation (Single Line — NO WRAPPING) */}
-            <nav className="hidden lg:flex items-center space-x-1 font-sans">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={`whitespace-nowrap flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 ${
-                      isActive
-                        ? 'bg-[#0052FF] text-white shadow-md shadow-blue-600/30 font-extrabold'
-                        : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-                    }`}
-                  >
-                    <Icon className="w-3.5 h-3.5 shrink-0" />
-                    <span>{item.name}</span>
-                  </Link>
-                );
-              })}
-            </nav>
+              {/* Streamlined Horizontal Navigation (Single Line — NO WRAPPING) */}
+              <nav className="hidden lg:flex items-center space-x-1 font-sans">
+                {navItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className={`whitespace-nowrap flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 ${
+                        isActive
+                          ? 'bg-[#0052FF] text-white shadow-md shadow-blue-600/30 font-extrabold'
+                          : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5 shrink-0" />
+                      <span>{item.name}</span>
+                    </Link>
+                  );
+                })}
+              </nav>
+            </div>
 
-            {/* Quick Action Buttons */}
-            <div className="hidden sm:flex items-center space-x-2 shrink-0">
+            {/* Right Group: Quick Action Buttons */}
+            <div className="hidden sm:flex items-center space-x-2.5 shrink-0">
               <button
                 onClick={handleRunAgent}
                 disabled={isRunning}
