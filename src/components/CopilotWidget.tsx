@@ -5,7 +5,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { Sparkles, X, Send, Bot, User, Play, ChevronRight, RefreshCw, Zap, ShieldCheck, ArrowRight, CornerDownLeft } from 'lucide-react';
+import { Sparkles, X, Send, Bot, ChevronRight } from 'lucide-react';
 
 interface ChatMessage {
   id: string;
@@ -13,6 +13,51 @@ interface ChatMessage {
   text: string;
   timestamp: string;
   suggestedActions?: { label: string; prompt: string }[];
+}
+
+// Clean Formatted Text Renderer (Parses **bold** and `code` without raw asterisks)
+function FormattedMessageText({ text }: { text: string }) {
+  const lines = text.split('\n');
+
+  return (
+    <div className="space-y-1.5 leading-relaxed">
+      {lines.map((line, lineIdx) => {
+        if (!line.trim()) return <div key={lineIdx} className="h-1" />;
+
+        // Process bold (**text**) and code (`text`) inside line
+        const parts = line.split(/(\*\*.*?\*\*|`.*?`|\*".*?"\*)/g);
+
+        return (
+          <div key={lineIdx} className="text-xs">
+            {parts.map((part, partIdx) => {
+              if (part.startsWith('**') && part.endsWith('**')) {
+                return (
+                  <strong key={partIdx} className="font-extrabold text-white">
+                    {part.slice(2, -2)}
+                  </strong>
+                );
+              }
+              if (part.startsWith('`') && part.endsWith('`')) {
+                return (
+                  <code key={partIdx} className="font-mono bg-blue-950/80 text-[#00C4FF] px-1.5 py-0.5 rounded text-[11px] border border-blue-800/60">
+                    {part.slice(1, -1)}
+                  </code>
+                );
+              }
+              if (part.startsWith('*') && part.endsWith('*')) {
+                return (
+                  <span key={partIdx} className="font-medium italic text-slate-200">
+                    {part.slice(1, -1)}
+                  </span>
+                );
+              }
+              return <span key={partIdx}>{part}</span>;
+            })}
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 export default function CopilotWidget() {
@@ -166,13 +211,13 @@ export default function CopilotWidget() {
               return (
                 <div key={msg.id} className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} space-y-1.5`}>
                   <div
-                    className={`max-w-[88%] p-3.5 rounded-2xl leading-relaxed whitespace-pre-wrap ${
+                    className={`max-w-[90%] p-3.5 rounded-2xl ${
                       isUser
                         ? 'bg-[#0052FF] text-white font-semibold rounded-br-xs shadow-md'
                         : 'bg-slate-900/90 text-slate-200 border border-slate-800 rounded-bl-xs shadow-sm font-medium'
                     }`}
                   >
-                    {msg.text}
+                    <FormattedMessageText text={msg.text} />
                   </div>
                   <span className="text-[9px] font-mono text-slate-500 px-1">{msg.timestamp}</span>
 
@@ -199,7 +244,7 @@ export default function CopilotWidget() {
             {loading && (
               <div className="flex items-center space-x-2 text-slate-400 text-xs font-mono p-2">
                 <Sparkles className="w-4 h-4 text-[#00C4FF] animate-spin" />
-                <span>RecoverAI AI is thinking & executing...</span>
+                <span>RecoverAI is thinking & executing command...</span>
               </div>
             )}
             <div ref={messagesEndRef} />

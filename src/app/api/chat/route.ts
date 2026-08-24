@@ -123,7 +123,7 @@ export async function POST(req: NextRequest) {
       actionCommand = { type: 'NAVIGATE', payload: { url: '/audit' } };
     } else {
       // General Copilot AI Explanation
-      reply = `👋 **Hello! I am RecoverAI Copilot.**\n\nI am your intelligent assistant for the **Razorpay AI Buildathon 2026**. You can ask me to explain any concept or control the site via chat!\n\n**Here are quick commands you can ask me to run:**\n- ⚡ *"Run 50-case batch recovery"* — Executes batch agent workflow\n- 🎯 *"Run Scenario A"* — Priya Sharma ₹2,499 payment link recovery\n- 🛡️ *"Run Scenario B"* — Rohan Mehta ₹75,000 policy block escalation\n- 🛑 *"Run Scenario C"* — Amit Kumar 3/3 retries stopping rule\n- 📊 *"Run Scenario D"* — Kavya Verma calculated strategy comparison\n- 📈 *"What is our benchmark revenue lift?"* — Shows +103.8% lift report\n- 🔄 *"Reset demo dataset"* — Re-seeds DB to seed 42`;
+      reply = `👋 **Hello! I am RecoverAI Copilot.**\n\nI am your intelligent assistant for the **Razorpay AI Buildathon 2026**. You can ask me to explain any concept or control the site via chat!\n\n**Here are quick commands you can ask me to run:**\n- ⚡ "Run 50-case batch recovery" — Executes batch agent workflow\n- 🎯 "Run Scenario A" — Priya Sharma ₹2,499 payment link recovery\n- 🛡️ "Run Scenario B" — Rohan Mehta ₹75,000 policy block escalation\n- 🛑 "Run Scenario C" — Amit Kumar 3/3 retries stopping rule\n- 📊 "Run Scenario D" — Kavya Verma calculated strategy comparison\n- 📈 "What is our benchmark revenue lift?" — Shows +103.8% lift report\n- 🔄 "Reset demo dataset" — Re-seeds DB to seed 42`;
 
       suggestedActions = [
         { label: '⚡ Run Batch Recovery', prompt: 'Run batch recovery' },
