@@ -1,4 +1,4 @@
-// ─── Razorpay RecoverAI Unified Midnight Executive Header ──────────────────────────
+// ─── Razorpay RecoverAI Streamlined Executive Header ────────────────────────────────
 
 'use client';
 
@@ -75,8 +75,8 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Top Deep Razorpay Midnight Bar */}
-      <div className="bg-[#050B17] border-b border-slate-800/90 text-slate-300 px-4 py-1.5 text-[11px] font-medium">
+      {/* Top Deep Razorpay Strip */}
+      <div className="bg-[#030712] border-b border-slate-800/80 text-slate-300 px-4 py-1.5 text-[11px] font-medium">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-emerald-950/90 text-emerald-400 border border-emerald-800/80 text-[10px] font-bold">
@@ -99,8 +99,8 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Main Razorpay Executive Midnight Navigation Header */}
-      <header className="sticky top-0 z-50 bg-[#02042B]/95 backdrop-blur-2xl border-b border-slate-800/90 shadow-2xl shadow-slate-950/50">
+      {/* Main Single-Tier Executive Header */}
+      <header className="sticky top-0 z-50 bg-[#060D1D]/95 backdrop-blur-2xl border-b border-slate-800/90 shadow-xl shadow-slate-950/40">
         {message && (
           <div className="bg-[#0052FF] text-white text-xs px-4 py-1.5 text-center font-bold animate-fadeIn shadow-inner">
             {message}
@@ -108,14 +108,14 @@ export default function Navbar() {
         )}
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 sm:h-18">
+          <div className="flex items-center justify-between h-16">
             {/* Razorpay Co-Branded Logo */}
-            <Link href="/" className="flex items-center hover:opacity-95 transition-opacity">
+            <Link href="/" className="flex items-center shrink-0 hover:opacity-95 transition-opacity">
               <Logo size="md" theme="dark" />
             </Link>
 
-            {/* Desktop Segmented Navigation Pills */}
-            <nav className="hidden lg:flex items-center p-1.5 rounded-2xl bg-[#091122]/90 border border-slate-800 shadow-inner">
+            {/* Streamlined Horizontal Navigation (Single Line — NO WRAPPING) */}
+            <nav className="hidden lg:flex items-center space-x-1 font-sans">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
@@ -123,25 +123,25 @@ export default function Navbar() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-black transition-all duration-200 ${
+                    className={`whitespace-nowrap flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 ${
                       isActive
-                        ? 'bg-[#0052FF] text-white shadow-lg shadow-blue-600/40 scale-[1.02]'
-                        : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
+                        ? 'bg-[#0052FF] text-white shadow-md shadow-blue-600/30 font-extrabold'
+                        : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                     }`}
                   >
-                    <Icon className="w-3.5 h-3.5" />
+                    <Icon className="w-3.5 h-3.5 shrink-0" />
                     <span>{item.name}</span>
                   </Link>
                 );
               })}
             </nav>
 
-            {/* Razorpay Electric Blue Quick Action Buttons */}
-            <div className="hidden sm:flex items-center space-x-2.5">
+            {/* Quick Action Buttons */}
+            <div className="hidden sm:flex items-center space-x-2 shrink-0">
               <button
                 onClick={handleRunAgent}
                 disabled={isRunning}
-                className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-[#0052FF] to-[#0072FF] hover:from-[#0046DA] hover:to-[#0052FF] active:scale-95 text-white disabled:opacity-50 transition-all shadow-lg shadow-blue-600/30"
+                className="whitespace-nowrap inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-black bg-[#0052FF] hover:bg-[#0046DA] active:scale-95 text-white disabled:opacity-50 transition-all shadow-md shadow-blue-600/30"
                 title="Run Recovery Agent on 10 eligible cases"
               >
                 <Play className={`w-3.5 h-3.5 ${isRunning ? 'animate-spin' : ''}`} />
@@ -151,7 +151,7 @@ export default function Navbar() {
               <button
                 onClick={handleResetDemo}
                 disabled={isResetting}
-                className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 hover:bg-slate-700 active:scale-95 text-slate-300 border border-slate-700/80 disabled:opacity-50 transition-all"
+                className="whitespace-nowrap inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-300 border border-slate-700/80 disabled:opacity-50 transition-all"
                 title="Re-seed demo dataset (Seed 42)"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isResetting ? 'animate-spin' : ''}`} />
@@ -183,7 +183,7 @@ export default function Navbar() {
 
         {/* Mobile Menu Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-[#02042B] border-b border-slate-800 px-4 pt-3 pb-5 space-y-3 shadow-2xl">
+          <div className="lg:hidden bg-[#060D1D] border-b border-slate-800 px-4 pt-3 pb-5 space-y-3 shadow-2xl">
             <nav className="space-y-1">
               {navItems.map((item) => {
                 const Icon = item.icon;
@@ -195,7 +195,7 @@ export default function Navbar() {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all ${
                       isActive
-                        ? 'bg-[#0052FF] text-white shadow-lg shadow-blue-500/30'
+                        ? 'bg-[#0052FF] text-white shadow-md shadow-blue-500/30'
                         : 'text-slate-300 hover:bg-slate-800'
                     }`}
                   >
