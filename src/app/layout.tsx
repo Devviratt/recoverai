@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import CopilotWidget from '@/components/CopilotWidget';
 
 export const metadata: Metadata = {
   title: 'RecoverAI — AI Revenue Recovery Agent | Razorpay AI Buildathon 2026',
@@ -17,8 +18,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-full flex flex-col bg-[#F4F6F9] text-slate-900 selection:bg-blue-600 selection:text-white">
+      <body className="min-h-full flex flex-col bg-[#F8FAFC] text-slate-900 selection:bg-[#0052FF] selection:text-white">
         {children}
+        <CopilotWidget />
       </body>
     </html>
   );
