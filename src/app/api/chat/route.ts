@@ -33,8 +33,68 @@ export async function POST(req: NextRequest) {
 
     // ─── Intent Matching & Command Execution ────────────────────────────────────
 
-    if (prompt.includes('batch') || prompt.includes('run batch')) {
-      // Trigger Batch Recovery Run
+    // 1. Identity Queries
+    if (prompt.includes('who are you') || prompt.includes('who r u') || prompt.includes('who r you') || prompt.includes('who are u') || prompt === 'who u') {
+      reply = `🤖 **I am RecoverAI Copilot** — an autonomous AI Revenue Recovery Assistant for Razorpay merchants.\n\nMy job is to automatically detect failed payment transactions, diagnose failure causes using AI, compute expected recovery values across candidate strategies (Payment Links, Retries, Alt Methods), enforce policy guardrails (like human escalations for >= ₹50,000 transactions), and execute automated recovery workflows on Razorpay rails.`;
+      suggestedActions = [
+        { label: '⚡ Run 50-Case Batch Recovery', prompt: 'Run batch recovery' },
+        { label: '🎯 Run Scenario A (₹2.5k)', prompt: 'Run Scenario A' },
+        { label: '🛡️ Run Scenario B (₹75k Block)', prompt: 'Run Scenario B' },
+      ];
+    }
+    // 2. Greetings
+    else if (prompt === 'hi' || prompt === 'hello' || prompt === 'hey' || prompt.includes('kaise ho') || prompt.includes('namaste') || prompt === 'hii') {
+      reply = `👋 **Hello!** I am **RecoverAI Copilot**, your autonomous revenue recovery assistant.\n\n📊 **Current Live Database Status:**\n- **Total Cases**: ${totalCount}\n- **Revenue at Risk**: ₹${totalRisk.toLocaleString('en-IN')}\n- **Recovered Revenue**: ₹${totalRecoveredMoney.toLocaleString('en-IN')} (${recoveredCases.length} cases)\n- **Pending Escalations**: ${escalationCount} cases\n\nHow can I help you today? You can ask me questions or tell me to run any command!`;
+      suggestedActions = [
+        { label: '⚡ Run Batch Recovery', prompt: 'Run batch recovery' },
+        { label: '🎯 Run Scenario A (₹2.5k)', prompt: 'Run Scenario A' },
+        { label: '📈 Benchmark Lift Report', prompt: 'What is our benchmark revenue lift?' },
+      ];
+    }
+    // 3. How system works
+    else if (prompt.includes('how do you work') || prompt.includes('how does it work') || prompt.includes('explain system') || prompt.includes('how it works')) {
+      reply = `⚙️ **How RecoverAI Works (12-Step Agentic Loop):**\n\n1. **Risk Assessment**: Evaluates customer LTV, transaction history & failure severity.\n2. **Strategy Engine**: Calculates expected recovery values: \`Probability * Amount - Operational Cost\`.\n3. **AI Diagnosis**: Gemini/AI models generate failure reasoning & customer messaging.\n4. **Policy Guardrails**: Enforces bounded autonomy — blocks high-risk or >= ₹50,000 actions for human review.\n5. **Automated Execution**: Creates Razorpay Payment Links or schedules smart retries.\n6. **Audit Trail**: Every step is logged in an append-only immutable audit log.`;
+      suggestedActions = [
+        { label: 'View Agent Trace', prompt: 'Take me to agent trace' },
+        { label: 'Run Scenario D (Strategy Comp)', prompt: 'Run Scenario D' },
+      ];
+    }
+    // 4. Risk Engine Explainability
+    else if (prompt.includes('risk score') || prompt.includes('risk engine')) {
+      reply = `🛡️ **The RecoverAI Risk Engine** evaluates failed payments on a 0–100 scale using 4 key factors:\n- **Failure Reason Severity** (e.g. \`insufficient_funds\` vs \`card_expired\` vs \`suspected_fraud\`)\n- **Customer Lifetime Value (LTV)** & Segment (Enterprise, Premium, Regular)\n- **Historical Success/Failure Ratio**\n- **Payment Velocity & Retry Attempts**\n\nHigh risk scores (> 70) trigger priority queue routing!`;
+    }
+    // 5. Strategy Engine Explainability
+    else if (prompt.includes('strategy engine') || (prompt.includes('expected recovery') && !prompt.includes('scenario d'))) {
+      reply = `📊 **The Strategy Engine** calculates expected recovery amounts for candidate actions:\n- \`Expected Recovery = Estimated Probability × Payment Amount - Operational Cost\`\n- It ranks candidate actions (\`PAYMENT_LINK\`, \`ALT_METHOD\`, \`RETRY\`, \`REMINDER\`, \`ESCALATE\`, \`STOP\`) and selects the highest expected compliant recovery value.`;
+      suggestedActions = [
+        { label: 'Run Scenario D (Strategy Comp)', prompt: 'Run Scenario D' },
+      ];
+    }
+    // 6. Policy & Guardrails
+    else if (prompt.includes('policy') || prompt.includes('guardrail') || prompt.includes('bounded autonomy')) {
+      reply = `🔒 **Policy Guardrails (Bounded Autonomy)**:\n- **Threshold Rule**: Any recovery action >= ₹50,000 is automatically blocked and escalated to human review.\n- **Low Confidence Rule**: AI recommendations with < 65% confidence require manual authorization.\n- **Contact Frequency Rule**: Prevents spamming customers (minimum 12 hours between notifications).`;
+      suggestedActions = [
+        { label: 'Run Scenario B (₹75k Block)', prompt: 'Run Scenario B' },
+      ];
+    }
+    // 7. Stopping Rules
+    else if (prompt.includes('stop') && prompt.includes('rule')) {
+      reply = `🛑 **Explicit Stopping Rules**:\n- **Max Attempts Rule**: Recovery is automatically halted after 3/3 failed attempts.\n- **Unrecoverable Failure Rule**: Ceases automation immediately on \`card_expired\` or \`account_closed\`.\n- **Customer Opt-Out**: Halts recovery if customer opts out.`;
+      suggestedActions = [
+        { label: 'Run Scenario C (Stopping Rule)', prompt: 'Run Scenario C' },
+      ];
+    }
+    // 8. Help / Commands List
+    else if (prompt.includes('help') || prompt.includes('command') || prompt.includes('what can you do')) {
+      reply = `💡 **Here are commands you can ask me to run:**\n\n- ⚡ **"Run batch recovery"** — Executes batch agent workflow across demo cases\n- 🎯 **"Run Scenario A"** — Priya Sharma ₹2,499 Payment Link recovery\n- 🛡️ **"Run Scenario B"** — Rohan Mehta ₹75,000 policy escalation block\n- 🛑 **"Run Scenario C"** — Amit Kumar 3/3 retries stopping rule\n- 📊 **"Run Scenario D"** — Kavya Verma calculated strategy comparison\n- 📈 **"What is our benchmark lift?"** — Displays +103.8% lift report\n- 🔄 **"Reset demo dataset"** — Re-seeds DB to seed 42 baseline`;
+      suggestedActions = [
+        { label: '⚡ Run Batch Recovery', prompt: 'Run batch recovery' },
+        { label: '🎯 Run Scenario A (₹2.5k)', prompt: 'Run Scenario A' },
+        { label: '📈 Benchmark Lift Report', prompt: 'What is our benchmark revenue lift?' },
+      ];
+    }
+    // 9. Batch Recovery Command
+    else if (prompt.includes('batch') || prompt.includes('run batch')) {
       const batchRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/demo/run-batch`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -56,8 +116,9 @@ export async function POST(req: NextRequest) {
         { label: 'Run Scenario B (₹75k)', prompt: 'Run Scenario B' },
         { label: 'Benchmark Lift Report', prompt: 'What is our benchmark revenue lift?' },
       ];
-    } else if (prompt.includes('scenario a') || prompt.includes('priya') || prompt.includes('2,499') || prompt.includes('2499')) {
-      // Scenario A: Payment Link Recovery
+    }
+    // 10. Scenario A
+    else if (prompt.includes('scenario a') || prompt.includes('priya') || prompt.includes('2,499') || prompt.includes('2499')) {
       const caseA = await prisma.payment.findUnique({ where: { externalId: 'pay_hero_scenario_a' }, include: { recoveryCase: true } });
       if (caseA?.recoveryCase) {
         await runRecoveryAgent(caseA.recoveryCase.id).catch(() => null);
@@ -68,8 +129,9 @@ export async function POST(req: NextRequest) {
       } else {
         reply = `Scenario A case not found. Click 'Reset Demo' in header to initialize hero scenarios.`;
       }
-    } else if (prompt.includes('scenario b') || prompt.includes('rohan') || prompt.includes('75,000') || prompt.includes('75000') || prompt.includes('escalat')) {
-      // Scenario B: High-Value Policy Escalation
+    }
+    // 11. Scenario B
+    else if (prompt.includes('scenario b') || prompt.includes('rohan') || prompt.includes('75,000') || prompt.includes('75000') || prompt.includes('escalat')) {
       const caseB = await prisma.payment.findUnique({ where: { externalId: 'pay_hero_scenario_b' }, include: { recoveryCase: true } });
       if (caseB?.recoveryCase) {
         await runRecoveryAgent(caseB.recoveryCase.id).catch(() => null);
@@ -79,8 +141,9 @@ export async function POST(req: NextRequest) {
       } else {
         reply = `Scenario B case not found. Click 'Reset Demo' in header.`;
       }
-    } else if (prompt.includes('scenario c') || prompt.includes('amit') || prompt.includes('stop') || prompt.includes('retries')) {
-      // Scenario C: Explicit Stopping Rule
+    }
+    // 12. Scenario C
+    else if (prompt.includes('scenario c') || prompt.includes('amit') || prompt.includes('retries')) {
       const caseC = await prisma.payment.findUnique({ where: { externalId: 'pay_hero_scenario_c' }, include: { recoveryCase: true } });
       if (caseC?.recoveryCase) {
         await prisma.recoveryCase.update({ where: { id: caseC.recoveryCase.id }, data: { recoveryAttempts: 3 } }).catch(() => null);
@@ -91,8 +154,9 @@ export async function POST(req: NextRequest) {
       } else {
         reply = `Scenario C case not found.`;
       }
-    } else if (prompt.includes('scenario d') || prompt.includes('kavya') || prompt.includes('strategy comparison') || prompt.includes('expected recovery')) {
-      // Scenario D: Calculated Strategy Comparison
+    }
+    // 13. Scenario D
+    else if (prompt.includes('scenario d') || prompt.includes('kavya') || prompt.includes('strategy comparison')) {
       const caseD = await prisma.payment.findUnique({ where: { externalId: 'pay_hero_scenario_d' }, include: { recoveryCase: true } });
       if (caseD?.recoveryCase) {
         await runRecoveryAgent(caseD.recoveryCase.id).catch(() => null);
@@ -102,8 +166,9 @@ export async function POST(req: NextRequest) {
       } else {
         reply = `Scenario D case not found.`;
       }
-    } else if (prompt.includes('reset') || prompt.includes('re-seed') || prompt.includes('seed 42')) {
-      // Reset Demo Dataset
+    }
+    // 14. Reset Demo
+    else if (prompt.includes('reset') || prompt.includes('re-seed') || prompt.includes('seed 42')) {
       const resetRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/demo/reset`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -112,18 +177,21 @@ export async function POST(req: NextRequest) {
 
       reply = `🔄 **Demo Dataset Reset to Seed 42!**\n\n- Re-seeded **1,003 payment events**\n- Initialized Hero Scenarios A, B, C, D\n- Reset database state to zero-contamination baseline.`;
       actionCommand = { type: 'REFRESH' };
-    } else if (prompt.includes('benchmark') || prompt.includes('lift') || prompt.includes('evaluation') || prompt.includes('baseline')) {
-      // Benchmark Info
+    }
+    // 15. Benchmark
+    else if (prompt.includes('benchmark') || prompt.includes('lift') || prompt.includes('evaluation') || prompt.includes('baseline')) {
       reply = `📈 **Reproducible Evaluation Benchmark Summary (Seed 42)**:\n\n- **Held-Out Test Cases**: 300 payments\n- **Total Revenue at Risk**: ₹61,91,571\n- **Baseline (Natural Recovery)**: ₹7,86,151 (12.7% rate)\n- **RecoverAI Recovered Revenue**: ₹16,01,882 (25.9% rate)\n- **Net Additional Revenue Recovered**: **+₹8,15,731**\n- **Relative Value Lift over Baseline**: **+103.8%**\n\nRun \`npm run evaluate -- --seed 42\` in terminal to reproduce CLI results.`;
       suggestedActions = [
         { label: 'View Evaluation Page', prompt: 'Take me to evaluation' },
         { label: 'Run Batch Recovery', prompt: 'Run batch recovery' },
       ];
       actionCommand = { type: 'NAVIGATE', payload: { url: '/evaluation' } };
-    } else if (prompt.includes('case') || prompt.includes('filter') || prompt.includes('search')) {
+    }
+    // 16. Navigation Intents
+    else if (prompt.includes('case') || prompt.includes('filter') || prompt.includes('search')) {
       reply = `🔍 Redirecting to the **Recovery Cases Directory** where you can search, filter by failure reason, priority, or status, and trigger the agent on individual payments.`;
       actionCommand = { type: 'NAVIGATE', payload: { url: '/cases' } };
-    } else if (prompt.includes('escalat') || prompt.includes('queue') || prompt.includes('human')) {
+    } else if (prompt.includes('queue') || prompt.includes('human')) {
       reply = `🛡️ Redirecting to the **Human Escalation Queue** where policy-blocked transactions (>= ₹50,000 or low confidence) await manual operator review.`;
       actionCommand = { type: 'NAVIGATE', payload: { url: '/escalations' } };
     } else if (prompt.includes('trace') || prompt.includes('agent') || prompt.includes('step')) {
@@ -133,15 +201,12 @@ export async function POST(req: NextRequest) {
       reply = `📜 Redirecting to the **Append-Only Audit Trail** containing immutable event records of every decision, guardrail check, and action.`;
       actionCommand = { type: 'NAVIGATE', payload: { url: '/audit' } };
     } else {
-      // General Copilot AI Explanation with Live DB Context
-      reply = `👋 **Hello! I am RecoverAI Copilot.**\n\nI am your autonomous AI Revenue Recovery Assistant powered by Razorpay API rails.\n\n📊 **Current Live Database Metrics:**\n- **Total Payment Cases**: ${totalCount}\n- **Revenue at Risk**: ₹${totalRisk.toLocaleString('en-IN')}\n- **Recovered Revenue**: ₹${totalRecoveredMoney.toLocaleString('en-IN')} (${recoveredCases.length} cases)\n- **Pending Escalations**: ${escalationCount} cases\n\n**Quick Commands You Can Ask Me To Run:**\n- ⚡ "Run 50-case batch recovery" — Executes batch agent workflow\n- 🎯 "Run Scenario A" — Priya Sharma ₹2,499 payment link recovery\n- 🛡️ "Run Scenario B" — Rohan Mehta ₹75,000 policy block escalation\n- 🛑 "Run Scenario C" — Amit Kumar 3/3 retries stopping rule\n- 📊 "Run Scenario D" — Kavya Verma calculated strategy comparison\n- 📈 "What is our benchmark revenue lift?" — Shows +103.8% lift report\n- 🔄 "Reset demo dataset" — Re-seeds DB to seed 42`;
-
+      // General Conversational Fallback
+      reply = `🤖 I am **RecoverAI Copilot**, your autonomous revenue recovery assistant for Razorpay merchants.\n\nI can answer technical questions about **Risk Scoring**, **Strategy Engine**, **Policy Guardrails**, or **Stopping Rules**, or I can **execute commands** for you.\n\nTry asking me:\n- *"Who are you?"*\n- *"How do you work?"*\n- *"What is risk score?"*\n- *"Run batch recovery"*`;
       suggestedActions = [
         { label: '⚡ Run Batch Recovery', prompt: 'Run batch recovery' },
         { label: '🎯 Run Scenario A (₹2.5k)', prompt: 'Run Scenario A' },
-        { label: '🛡️ Run Scenario B (₹75k Block)', prompt: 'Run Scenario B' },
-        { label: '📊 Run Scenario D (Strategy Comp)', prompt: 'Run Scenario D' },
-        { label: '📈 Benchmark Lift Report', prompt: 'What is our benchmark lift?' },
+        { label: '📈 Benchmark Lift Report', prompt: 'What is our benchmark revenue lift?' },
       ];
     }
 
