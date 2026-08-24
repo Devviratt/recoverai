@@ -162,15 +162,22 @@ export default function CopilotWidget() {
       <div className="fixed bottom-6 right-6 z-50">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="group relative flex items-center space-x-2.5 px-4 py-3 rounded-full bg-[#02042B] text-white border border-[#0052FF]/60 shadow-2xl shadow-blue-600/30 hover:scale-105 active:scale-95 transition-all duration-300 backdrop-blur-xl"
+          className="group relative flex items-center space-x-3 px-4.5 py-3 rounded-full bg-gradient-to-r from-[#030712] via-[#081020] to-[#030712] text-white border border-[#00C4FF]/50 shadow-2xl shadow-blue-600/40 hover:shadow-blue-500/70 hover:scale-105 active:scale-95 transition-all duration-300 backdrop-blur-2xl"
           title="Open RecoverAI Executive Copilot"
         >
-          <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00C4FF] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-[#0052FF]"></span>
-          </span>
-          <Sparkles className="w-4 h-4 text-[#00C4FF] group-hover:rotate-12 transition-transform" />
-          <span className="text-xs font-black tracking-wide">RecoverAI Copilot</span>
+          <div className="relative flex items-center justify-center p-1.5 rounded-full bg-gradient-to-br from-[#0052FF] to-[#00C4FF] text-white shadow-md shadow-blue-500/50">
+            <Sparkles className="w-4 h-4 text-white group-hover:rotate-12 transition-transform" />
+            <span className="animate-ping absolute inset-0 rounded-full bg-[#00C4FF] opacity-40"></span>
+          </div>
+
+          <div className="flex items-center space-x-1.5">
+            <span className="text-xs font-black tracking-wide text-white">Recover</span>
+            <span className="text-xs font-black tracking-wide bg-gradient-to-r from-[#0052FF] via-[#00C4FF] to-[#38BDF8] bg-clip-text text-transparent">AI</span>
+            <span className="text-xs font-black tracking-wide text-white">Copilot</span>
+            <span className="ml-1 px-1.5 py-0.5 rounded bg-[#0052FF]/30 border border-[#00C4FF]/40 text-[#00C4FF] text-[9px] font-extrabold uppercase font-mono">
+              AI
+            </span>
+          </div>
         </button>
       </div>
 
