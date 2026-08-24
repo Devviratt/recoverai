@@ -1,4 +1,4 @@
-// ─── Razorpay RecoverAI Streamlined Executive Header ────────────────────────────────
+// ─── Razorpay RecoverAI Executive Header ──────────────────────────────────────────
 
 'use client';
 
@@ -77,7 +77,7 @@ export default function Navbar() {
     <>
       {/* Top Deep Razorpay Strip */}
       <div className="bg-[#030712] border-b border-slate-800/80 text-slate-300 px-4 py-1.5 text-[11px] font-medium">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="max-w-[1440px] mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-emerald-950/90 text-emerald-400 border border-emerald-800/80 text-[10px] font-bold">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
@@ -99,7 +99,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Main Single-Tier Executive Header */}
+      {/* Main Executive Header */}
       <header className="sticky top-0 z-50 bg-[#060D1D]/95 backdrop-blur-2xl border-b border-slate-800/90 shadow-xl shadow-slate-950/40">
         {message && (
           <div className="bg-[#0052FF] text-white text-xs px-4 py-1.5 text-center font-bold animate-fadeIn shadow-inner">
@@ -107,40 +107,37 @@ export default function Navbar() {
           </div>
         )}
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Left Group: Logo + Navigation with Generous Spacing */}
-            <div className="flex items-center space-x-8 xl:space-x-12">
-              {/* Razorpay Co-Branded Logo */}
-              <Link href="/" className="flex items-center shrink-0 hover:opacity-95 transition-opacity pr-2">
-                <Logo size="md" theme="dark" />
-              </Link>
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-18">
+            {/* Left: Razorpay AI Logo */}
+            <Link href="/" className="flex items-center shrink-0 hover:opacity-95 transition-opacity mr-3 xl:mr-6">
+              <Logo size="md" theme="dark" />
+            </Link>
 
-              {/* Streamlined Horizontal Navigation (Single Line — NO WRAPPING) */}
-              <nav className="hidden lg:flex items-center space-x-1 font-sans">
-                {navItems.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
-                  return (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className={`whitespace-nowrap flex items-center space-x-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 ${
-                        isActive
-                          ? 'bg-[#0052FF] text-white shadow-md shadow-blue-600/30 font-extrabold'
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-                      }`}
-                    >
-                      <Icon className="w-3.5 h-3.5 shrink-0" />
-                      <span>{item.name}</span>
-                    </Link>
-                  );
-                })}
-              </nav>
-            </div>
+            {/* Center: Streamlined Horizontal Navigation (Single Line — NO WRAPPING, PERFECT SPACING) */}
+            <nav className="hidden lg:flex items-center space-x-1 xl:space-x-2 font-sans overflow-x-auto no-scrollbar">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`whitespace-nowrap flex items-center space-x-1.5 px-3 py-2 xl:px-4 xl:py-2.5 rounded-xl text-xs font-extrabold transition-all duration-200 ${
+                      isActive
+                        ? 'bg-[#0052FF] text-white shadow-md shadow-blue-600/30 font-extrabold scale-[1.02]'
+                        : 'text-slate-300 hover:text-white hover:bg-slate-800/60 font-bold'
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5 shrink-0" />
+                    <span>{item.name}</span>
+                  </Link>
+                );
+              })}
+            </nav>
 
-            {/* Right Group: Quick Action Buttons */}
-            <div className="hidden sm:flex items-center space-x-2.5 shrink-0">
+            {/* Right: Quick Action Buttons with Clear Vertical Divider */}
+            <div className="hidden sm:flex items-center space-x-2.5 shrink-0 ml-3 xl:ml-6 pl-4 border-l border-slate-800/80">
               <button
                 onClick={handleRunAgent}
                 disabled={isRunning}
