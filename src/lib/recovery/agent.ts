@@ -534,8 +534,25 @@ export async function runRecoveryAgent(caseId: string): Promise<AgentTrace> {
     if (actionType !== 'ESCALATE' && actionType !== 'STOP') {
       if (executionResult.success) {
         await transitionState('ACTION_SELECTED', 'ACTION_EXECUTED');
-        // In demo mode, simulate awaiting outcome
         await transitionState('ACTION_EXECUTED', 'AWAITING_OUTCOME');
+
+        // Simulate customer recovery outcome based on strategy estimation probability
+        const chosenCandidate = strategyComparison?.candidates?.find((s: any) => s.action === actionType);
+        const recoveryProb = chosenCandidate ? chosenCandidate.estimatedRecoveryProbability : 0.75;
+        const pseudoRandom = ((context.amount * 17) % 100) / 100;
+        const isRecovered = pseudoRandom <= recoveryProb;
+
+        if (isRecovered) {
+          await transitionState('AWAITING_OUTCOME', 'RECOVERED');
+          await prisma.recoveryCase.update({
+            where: { id: caseId },
+            data: {
+              recoveredAmount: context.amount,
+              recoveredAt: new Date(),
+            },
+          });
+          await audit('RECOVERY_OUTCOME', `Payment of ₹${context.amount.toLocaleString('en-IN')} successfully recovered via ${actionType}`, 'AWAITING_OUTCOME', 'RECOVERED');
+        }
       } else {
         await transitionState('ACTION_SELECTED', 'FAILED');
       }
