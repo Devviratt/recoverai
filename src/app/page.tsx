@@ -1,5 +1,4 @@
-// ─── RecoverAI Dashboard Overview & Batch Recovery Command Center ────────────────
-// Track 03 Production AI Revenue Recovery Command Center
+// ─── Razorpay RecoverAI Dashboard & Batch Recovery Command Center ────────────────
 
 'use client';
 
@@ -129,30 +128,32 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9] text-slate-900 flex flex-col font-sans selection:bg-blue-500 selection:text-white">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col font-sans selection:bg-[#0052FF] selection:text-white">
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
-        {/* Top Provider Status & Synthetic Disclaimer Banner */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-amber-50/80 border border-amber-200/80 p-3.5 px-5 rounded-2xl text-xs text-amber-900 font-medium">
-          <div className="flex items-center space-x-2">
-            <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+        {/* Top Razorpay System Status Pill */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-blue-50/80 border border-blue-200/70 p-3.5 px-5 rounded-2xl text-xs text-slate-700 font-medium shadow-2xs">
+          <div className="flex items-center space-x-2.5">
+            <div className="p-1 rounded-full bg-[#0052FF]/10 text-[#0052FF]">
+              <AlertCircle className="w-4 h-4" />
+            </div>
             <span>
-              <strong className="font-extrabold text-slate-900">Controlled Evaluation Mode:</strong> Evaluation on synthetic held-out dataset. System demonstrates bounded AI decision-making without exposing real merchant credentials.
+              <strong className="font-extrabold text-slate-900">Controlled Evaluation Mode:</strong> Evaluation on synthetic held-out dataset. System demonstrates bounded AI decision-making on Razorpay rails.
             </span>
           </div>
           <ProviderStatus />
         </div>
 
-        {/* Ambient Hero Banner */}
-        <div className="relative rounded-3xl bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A] text-white p-6 sm:p-8 shadow-2xl shadow-slate-900/20 border border-slate-700/50 overflow-hidden">
-          {/* Ambient Glow Effects */}
-          <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-600/30 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
+        {/* Ambient Razorpay Midnight Hero Banner */}
+        <div className="relative rounded-3xl bg-gradient-to-br from-[#02042B] via-[#0A192C] to-[#02042B] text-white p-6 sm:p-9 shadow-2xl shadow-blue-950/20 border border-slate-800/80 overflow-hidden">
+          {/* Ambient Razorpay Glow Effects */}
+          <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#0052FF]/30 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#00C4FF]/20 rounded-full blur-3xl pointer-events-none"></div>
 
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="space-y-3 max-w-2xl">
-              <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-blue-500/10 border border-blue-400/20 text-blue-400 text-xs font-bold backdrop-blur-md">
+            <div className="space-y-3.5 max-w-2xl">
+              <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-[#0052FF]/20 border border-[#0052FF]/40 text-[#00C4FF] text-xs font-extrabold backdrop-blur-md">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Razorpay AI Buildathon 2026 — Track 03: AI Revenue Recovery</span>
               </div>
@@ -160,7 +161,7 @@ export default function DashboardPage() {
                 AI Revenue Recovery Agent
               </h1>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
-                Autonomous risk detection, Strategy Engine value estimation, bounded policy guardrails, and automated recovery on Razorpay rails.
+                Autonomous risk detection, Strategy Engine expected value estimation, bounded policy guardrails, and automated recovery on Razorpay rails.
               </p>
             </div>
 
@@ -169,7 +170,7 @@ export default function DashboardPage() {
               <button
                 onClick={handleRunBatchRecovery}
                 disabled={batchLoading}
-                className="inline-flex items-center space-x-2 px-6 py-3.5 rounded-2xl text-xs font-black bg-blue-600 hover:bg-blue-500 text-white transition-all shadow-xl shadow-blue-500/30 hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                className="inline-flex items-center space-x-2 px-6 py-3.5 rounded-2xl text-xs font-black bg-[#0052FF] hover:bg-[#0046DA] text-white transition-all shadow-xl shadow-blue-600/30 hover:scale-[1.02] active:scale-95 disabled:opacity-50"
               >
                 <Play className={`w-4 h-4 ${batchLoading ? 'animate-spin' : ''}`} />
                 <span>{batchLoading ? 'Executing Batch Agent...' : 'Run Batch Recovery'}</span>
@@ -187,7 +188,7 @@ export default function DashboardPage() {
 
           {/* Batch Progress Text Status */}
           {batchProgressText && (
-            <div className="mt-4 pt-3 border-t border-slate-700/60 text-xs font-mono font-bold text-emerald-400 animate-pulse">
+            <div className="mt-4 pt-3 border-t border-slate-800 text-xs font-mono font-bold text-[#00C4FF] animate-pulse">
               {batchProgressText}
             </div>
           )}
@@ -196,7 +197,7 @@ export default function DashboardPage() {
         {/* Hero Pitch Scenarios Launcher */}
         <HeroScenarioCards />
 
-        {/* Top iOS Metric Cards */}
+        {/* Top Executive Metric Cards */}
         {loading ? (
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 animate-pulse">
             {[...Array(5)].map((_, i) => (
@@ -206,7 +207,7 @@ export default function DashboardPage() {
         ) : data ? (
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
             {/* Metric 1: Revenue at Risk */}
-            <div className="bg-white rounded-3xl p-5 border border-slate-200/60 shadow-xl shadow-slate-200/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+            <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xl shadow-slate-200/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
               <div className="flex items-center justify-between text-slate-500 text-xs font-bold">
                 <span>Revenue at Risk</span>
                 <div className="p-2.5 rounded-2xl bg-amber-500/10 text-amber-600">
@@ -243,10 +244,10 @@ export default function DashboardPage() {
             </div>
 
             {/* Metric 3: Recovery Rate */}
-            <div className="bg-white rounded-3xl p-5 border border-slate-200/60 shadow-xl shadow-slate-200/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+            <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xl shadow-slate-200/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
               <div className="flex items-center justify-between text-slate-500 text-xs font-bold">
                 <span>Recovery Rate</span>
-                <div className="p-2.5 rounded-2xl bg-blue-500/10 text-blue-600">
+                <div className="p-2.5 rounded-2xl bg-[#0052FF]/10 text-[#0052FF]">
                   <CheckCircle2 className="w-4 h-4" />
                 </div>
               </div>
@@ -261,7 +262,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Metric 4: Active Cases */}
-            <div className="bg-white rounded-3xl p-5 border border-slate-200/60 shadow-xl shadow-slate-200/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+            <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xl shadow-slate-200/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
               <div className="flex items-center justify-between text-slate-500 text-xs font-bold">
                 <span>Active Cases</span>
                 <div className="p-2.5 rounded-2xl bg-indigo-500/10 text-indigo-600">
@@ -300,10 +301,10 @@ export default function DashboardPage() {
 
         {/* BATCH RECOVERY COMMAND CENTER & EXPECTED VS REALIZED WIDGET */}
         {batchMetrics && (
-          <div className="bg-white rounded-3xl border border-slate-200/60 p-6 sm:p-7 shadow-xl shadow-slate-200/40 space-y-5">
+          <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-7 shadow-xl shadow-slate-200/40 space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
               <div>
-                <div className="flex items-center space-x-2 text-blue-600 font-black text-xs uppercase tracking-wider">
+                <div className="flex items-center space-x-2 text-[#0052FF] font-black text-xs uppercase tracking-wider">
                   <Zap className="w-4 h-4" />
                   <span>Batch Recovery Results (Real DB Measured)</span>
                 </div>
@@ -326,7 +327,7 @@ export default function DashboardPage() {
 
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
                 <span className="text-slate-400 block font-bold">Expected Recovery (Strategy Engine)</span>
-                <div className="text-xl font-black text-blue-600 mt-1">
+                <div className="text-xl font-black text-[#0052FF] mt-1">
                   {formatCurrency(batchMetrics.totalExpectedRecovery)}
                 </div>
               </div>
@@ -367,7 +368,7 @@ export default function DashboardPage() {
 
         {/* Visual Revenue Recovery Funnel */}
         {data && (
-          <div className="bg-white rounded-3xl border border-slate-200/60 p-6 sm:p-7 shadow-xl shadow-slate-200/40 space-y-4">
+          <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-7 shadow-xl shadow-slate-200/40 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <h3 className="text-base font-black text-slate-900 tracking-tight">
@@ -402,7 +403,7 @@ export default function DashboardPage() {
                 className="bg-slate-50 hover:bg-blue-50/60 p-4 rounded-2xl border border-slate-200/80 transition-all hover:border-blue-300 block"
               >
                 <span className="text-slate-400 font-bold block text-[10px] uppercase tracking-wider">3. Eligible</span>
-                <div className="text-lg font-black text-blue-600 mt-1">{data.funnel.eligible.toLocaleString()}</div>
+                <div className="text-lg font-black text-[#0052FF] mt-1">{data.funnel.eligible.toLocaleString()}</div>
               </Link>
 
               <Link
@@ -433,10 +434,10 @@ export default function DashboardPage() {
         )}
 
         {/* Recent Cases Preview */}
-        <div className="bg-white rounded-3xl border border-slate-200/60 p-6 sm:p-7 shadow-xl shadow-slate-200/40 space-y-4">
+        <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-7 shadow-xl shadow-slate-200/40 space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h3 className="text-base font-black text-slate-900 tracking-tight">Recent Failed Payments & Interventions</h3>
-            <Link href="/cases" className="text-xs font-extrabold text-blue-600 hover:underline flex items-center">
+            <Link href="/cases" className="text-xs font-extrabold text-[#0052FF] hover:underline flex items-center">
               <span>View All Cases</span>
               <ChevronRight className="w-3.5 h-3.5 ml-1" />
             </Link>
@@ -446,13 +447,13 @@ export default function DashboardPage() {
             {recentCases.map((c) => (
               <div key={c.id} className="py-3.5 flex items-center justify-between text-xs hover:bg-slate-50/60 px-2 rounded-2xl transition-colors">
                 <div className="flex items-center space-x-3">
-                  <span className="font-mono font-bold text-blue-600">{c.payment.externalId}</span>
+                  <span className="font-mono font-bold text-[#0052FF]">{c.payment.externalId}</span>
                   <span className="font-bold text-slate-900">{c.customer.name}</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <span className="font-black text-slate-900">{formatCurrency(c.payment.amount)}</span>
                   <StatusBadge status={c.status} />
-                  <Link href={`/cases/${c.id}`} className="font-extrabold text-blue-600 hover:underline">
+                  <Link href={`/cases/${c.id}`} className="font-extrabold text-[#0052FF] hover:underline">
                     Inspect
                   </Link>
                 </div>
