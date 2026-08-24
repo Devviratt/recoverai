@@ -132,57 +132,55 @@ export default function DashboardPage() {
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
-        {/* Top Razorpay System Status Pill */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-blue-50/80 border border-blue-200/70 p-3.5 px-5 rounded-2xl text-xs text-slate-700 font-medium shadow-2xs">
-          <div className="flex items-center space-x-2.5">
-            <div className="p-1 rounded-full bg-[#0052FF]/10 text-[#0052FF]">
-              <AlertCircle className="w-4 h-4" />
-            </div>
-            <span>
-              <strong className="font-extrabold text-slate-900">Controlled Evaluation Mode:</strong> Evaluation on synthetic held-out dataset. System demonstrates bounded AI decision-making on Razorpay rails.
-            </span>
-          </div>
-          <ProviderStatus />
-        </div>
-
         {/* Ambient Razorpay Midnight Hero Banner */}
         <div className="relative rounded-3xl bg-gradient-to-br from-[#02042B] via-[#0A192C] to-[#02042B] text-white p-6 sm:p-9 shadow-2xl shadow-blue-950/20 border border-slate-800/80 overflow-hidden">
           {/* Ambient Razorpay Glow Effects */}
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#0052FF]/30 rounded-full blur-3xl pointer-events-none"></div>
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#00C4FF]/20 rounded-full blur-3xl pointer-events-none"></div>
 
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="space-y-3.5 max-w-2xl">
+          <div className="relative z-10 space-y-6">
+            {/* Top Info Bar inside Hero */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-4">
               <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-[#0052FF]/20 border border-[#0052FF]/40 text-[#00C4FF] text-xs font-extrabold backdrop-blur-md">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Razorpay AI Buildathon 2026 — Track 03: AI Revenue Recovery</span>
               </div>
-              <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white leading-tight">
-                AI Revenue Recovery Agent
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
-                Autonomous risk detection, Strategy Engine expected value estimation, bounded policy guardrails, and automated recovery on Razorpay rails.
-              </p>
+              <ProviderStatus variant="dark" />
             </div>
 
-            {/* Primary & Secondary Action CTAs */}
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                onClick={handleRunBatchRecovery}
-                disabled={batchLoading}
-                className="inline-flex items-center space-x-2 px-6 py-3.5 rounded-2xl text-xs font-black bg-[#0052FF] hover:bg-[#0046DA] text-white transition-all shadow-xl shadow-blue-600/30 hover:scale-[1.02] active:scale-95 disabled:opacity-50"
-              >
-                <Play className={`w-4 h-4 ${batchLoading ? 'animate-spin' : ''}`} />
-                <span>{batchLoading ? 'Executing Batch Agent...' : 'Run Batch Recovery'}</span>
-              </button>
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              <div className="space-y-2.5 max-w-2xl">
+                <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white leading-tight">
+                  AI Revenue Recovery Agent
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
+                  Autonomous risk detection, Strategy Engine expected value estimation, bounded policy guardrails, and automated recovery on Razorpay rails.
+                </p>
+                <div className="flex items-center space-x-2 text-[11px] text-amber-300/90 font-medium pt-1">
+                  <AlertCircle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>Controlled evaluation on synthetic held-out dataset. Bounded decision-making on Razorpay API rails.</span>
+                </div>
+              </div>
 
-              <Link
-                href="/evaluation"
-                className="inline-flex items-center space-x-2 px-5 py-3.5 rounded-2xl text-xs font-bold bg-white/10 hover:bg-white/15 text-slate-200 border border-white/15 transition-all backdrop-blur-md hover:scale-[1.02] active:scale-95"
-              >
-                <BarChart2 className="w-4 h-4" />
-                <span>Run Benchmark Evaluation</span>
-              </Link>
+              {/* Primary & Secondary Action CTAs */}
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  onClick={handleRunBatchRecovery}
+                  disabled={batchLoading}
+                  className="inline-flex items-center space-x-2 px-6 py-3.5 rounded-2xl text-xs font-black bg-[#0052FF] hover:bg-[#0046DA] text-white transition-all shadow-xl shadow-blue-600/30 hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                >
+                  <Play className={`w-4 h-4 ${batchLoading ? 'animate-spin' : ''}`} />
+                  <span>{batchLoading ? 'Executing Batch Agent...' : 'Run Batch Recovery'}</span>
+                </button>
+
+                <Link
+                  href="/evaluation"
+                  className="inline-flex items-center space-x-2 px-5 py-3.5 rounded-2xl text-xs font-bold bg-white/10 hover:bg-white/15 text-slate-200 border border-white/15 transition-all backdrop-blur-md hover:scale-[1.02] active:scale-95"
+                >
+                  <BarChart2 className="w-4 h-4" />
+                  <span>Run Benchmark Evaluation</span>
+                </Link>
+              </div>
             </div>
           </div>
 
