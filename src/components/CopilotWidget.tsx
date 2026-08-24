@@ -129,13 +129,14 @@ export default function CopilotWidget() {
 
         setMessages((prev) => [...prev, assistantMsg]);
 
-        // Execute returned action commands
+        // Execute returned action commands & sync dashboard in real-time
         if (data.actionCommand) {
           const cmd = data.actionCommand;
+          window.dispatchEvent(new CustomEvent('recoverai:refresh-dashboard'));
           if (cmd.type === 'NAVIGATE' && cmd.payload?.url) {
             setTimeout(() => router.push(cmd.payload.url), 1200);
           } else if (cmd.type === 'REFRESH') {
-            setTimeout(() => router.refresh(), 1000);
+            setTimeout(() => router.refresh(), 500);
           }
         }
       } else {

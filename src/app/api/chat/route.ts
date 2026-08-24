@@ -4,7 +4,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { runRecoveryAgent } from '@/lib/recovery/agent';
-import { simulateBatch } from '@/lib/evaluation/simulator';
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,6 +19,18 @@ export async function POST(req: NextRequest) {
     let actionCommand: { type: string; payload?: any } | null = null;
     let suggestedActions: { label: string; prompt: string }[] = [];
 
+    // Fetch current live DB metrics for context-aware responses
+    const allDemoCases = await prisma.recoveryCase.findMany({
+      where: { isEvaluation: false },
+      include: { payment: true },
+    });
+    const totalCount = allDemoCases.length;
+    const totalRisk = allDemoCases.reduce((sum, c) => sum + (c.revenueAtRisk || c.payment.amount), 0);
+    const recoveredCases = allDemoCases.filter((c) => c.status === 'RECOVERED');
+    const totalRecoveredMoney = recoveredCases.reduce((sum, c) => sum + (c.recoveredAmount || 0), 0);
+    const escalationCount = allDemoCases.filter((c) => c.status === 'ESCALATED').length;
+    const stoppedCount = allDemoCases.filter((c) => c.status === 'STOPPED').length;
+
     // ─── Intent Matching & Command Execution ────────────────────────────────────
 
     if (prompt.includes('batch') || prompt.includes('run batch')) {
@@ -33,7 +44,7 @@ export async function POST(req: NextRequest) {
       if (batchRes && batchRes.ok) {
         const batchData = await batchRes.json();
         const m = batchData.metrics;
-        reply = `⚡ **Batch Recovery Executed Successfully!**\n\n- **Cases Evaluated**: ${m.totalEvaluated}\n- **Revenue at Risk**: ₹${m.totalRevenueAtRisk.toLocaleString('en-IN')}\n- **Expected Recovery (Strategy Engine)**: ₹${m.totalExpectedRecovery.toLocaleString('en-IN')}\n- **Human Escalations**: ${m.escalatedCount} cases\n- **Stopped Safely**: ${m.stoppedCount} cases\n\nAll actions executed through the 12-step agent loop and recorded in the audit trail.`;
+        reply = `⚡ **Batch Recovery Executed Successfully!**\n\n- **Cases Evaluated**: ${m.totalEvaluated}\n- **Revenue at Risk**: ₹${m.totalRevenueAtRisk.toLocaleString('en-IN')}\n- **Realized Recovered Money**: ₹${m.totalRealizedRecovery.toLocaleString('en-IN')} (${m.recoveredCount} cases)\n- **Expected Recovery (Strategy Engine)**: ₹${m.totalExpectedRecovery.toLocaleString('en-IN')}\n- **Human Escalations**: ${m.escalatedCount} cases\n- **Stopped Safely**: ${m.stoppedCount} cases\n\nAll actions executed through the 12-step agent loop and recorded in the audit trail. Dashboard updated in real-time.`;
         actionCommand = { type: 'REFRESH' };
       } else {
         reply = `⚡ Batch Recovery triggered across demo cases! Check the dashboard command center for live database metrics.`;
@@ -122,8 +133,8 @@ export async function POST(req: NextRequest) {
       reply = `📜 Redirecting to the **Append-Only Audit Trail** containing immutable event records of every decision, guardrail check, and action.`;
       actionCommand = { type: 'NAVIGATE', payload: { url: '/audit' } };
     } else {
-      // General Copilot AI Explanation
-      reply = `👋 **Hello! I am RecoverAI Copilot.**\n\nI am your intelligent assistant for the **Razorpay AI Buildathon 2026**. You can ask me to explain any concept or control the site via chat!\n\n**Here are quick commands you can ask me to run:**\n- ⚡ "Run 50-case batch recovery" — Executes batch agent workflow\n- 🎯 "Run Scenario A" — Priya Sharma ₹2,499 payment link recovery\n- 🛡️ "Run Scenario B" — Rohan Mehta ₹75,000 policy block escalation\n- 🛑 "Run Scenario C" — Amit Kumar 3/3 retries stopping rule\n- 📊 "Run Scenario D" — Kavya Verma calculated strategy comparison\n- 📈 "What is our benchmark revenue lift?" — Shows +103.8% lift report\n- 🔄 "Reset demo dataset" — Re-seeds DB to seed 42`;
+      // General Copilot AI Explanation with Live DB Context
+      reply = `👋 **Hello! I am RecoverAI Copilot.**\n\nI am your autonomous AI Revenue Recovery Assistant powered by Razorpay API rails.\n\n📊 **Current Live Database Metrics:**\n- **Total Payment Cases**: ${totalCount}\n- **Revenue at Risk**: ₹${totalRisk.toLocaleString('en-IN')}\n- **Recovered Revenue**: ₹${totalRecoveredMoney.toLocaleString('en-IN')} (${recoveredCases.length} cases)\n- **Pending Escalations**: ${escalationCount} cases\n\n**Quick Commands You Can Ask Me To Run:**\n- ⚡ "Run 50-case batch recovery" — Executes batch agent workflow\n- 🎯 "Run Scenario A" — Priya Sharma ₹2,499 payment link recovery\n- 🛡️ "Run Scenario B" — Rohan Mehta ₹75,000 policy block escalation\n- 🛑 "Run Scenario C" — Amit Kumar 3/3 retries stopping rule\n- 📊 "Run Scenario D" — Kavya Verma calculated strategy comparison\n- 📈 "What is our benchmark revenue lift?" — Shows +103.8% lift report\n- 🔄 "Reset demo dataset" — Re-seeds DB to seed 42`;
 
       suggestedActions = [
         { label: '⚡ Run Batch Recovery', prompt: 'Run batch recovery' },

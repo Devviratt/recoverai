@@ -98,6 +98,15 @@ export default function DashboardPage() {
 
   useEffect(() => {
     loadDashboard();
+
+    const handleCopilotRefresh = () => {
+      loadDashboard();
+    };
+
+    window.addEventListener('recoverai:refresh-dashboard', handleCopilotRefresh);
+    return () => {
+      window.removeEventListener('recoverai:refresh-dashboard', handleCopilotRefresh);
+    };
   }, []);
 
   const handleRunBatchRecovery = async () => {
